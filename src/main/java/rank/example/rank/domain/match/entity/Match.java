@@ -60,10 +60,10 @@ public class Match {
     @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MatchSet> matchSets = new ArrayList<>();
 
-    @OneToOne
+    @ManyToOne
     private User winner;
 
-    @OneToOne
+    @ManyToOne
     private User loser;
 
 }
