@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Application</title>
+</head>
+<body>
+<h1>Match Application</h1>
+<form id="applicationForm">
+    <label for="matchId">Match ID:</label>
+    <input type="text" id="matchId" name="matchId" required><br><br>
+        <label for="applicantId">Applicant ID:</label>
+        <input type="text" id="applicantId" name="applicantId" required><br><br>
+            <button type="submit">Apply</button>
+</form>
+<h2>Application List</h2>
+<ul id="applicationList">
+    <!-- 이 곳에 서버에서 받은 신청 목록이 추가됩니다. -->
+</ul>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script>
+    var stompClient = null;
+
+    function connect() {
+    var socket = new SockJS('/ws');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function(frame) {
+    console.log('Connected: ' + frame);
+    stompClient.subscribe('/topic/match/{matchId}/applications', function(message) {
+    var applications = JSON.parse(message.body);
+    updateApplications(applications);
+});
+});
+}
+
+    function updateApplications(applications) {
+    var applicationList = document.getElementById("applicationList");
+    // 기존의 신청 목록을 모두 삭제
+    while (applicationList.firstChild) {
+    applicationList.removeChild(applicationList.firstChild);
+}
+    // 새로운 신청 목록을 화면에 추가
+    applications.forEach(function(application) {
+    var listItem = document.createElement("li");
+    listItem.textContent = "Applicant ID: " + application.applicantId + ", Match ID: " + application.matchId;
+    applicationList.appendChild(listItem);
+});
+}
+
+    document.getElementById("applicationForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    var matchId = document.getElementById("matchId").value;
+    var applicantId = document.getElementById("applicantId").value;
+    stompClient.send("/app/apply/" + matchId, {}, JSON.stringify({ 'matchId': matchId, 'applicantId': applicantId }));
+});
+
+    connect();
+</script>
+</body>
+</html>

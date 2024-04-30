@@ -1,0 +1,46 @@
+spring:
+
+  logging:
+    level:
+      root: DEBUG
+      org.springframework.web: DEBUG
+      org.springframework.security: DEBUG
+
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    url: jdbc:mysql://testrds.c7k1ulhtgd52.ap-northeast-2.rds.amazonaws.com:3306/seonlimmm
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: admin
+    password: abcd1234
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    defer-datasource-initialization: true
+
+# ??
+oauth:
+  kakao:
+    client_id: 920865d3fcdbfd024c9e2f35b102beb6
+    redirect_uri: http://localhost:3000/oauth/redirected/kakao
+    client_secret: dXIKF4iENKboF2RGWERWSgOLZwRRbfQ4
+    scope: profile_nickname, profile_image, account_email
+  naver:
+    client_id: tsCjaf_Sguy3on43jxmt
+    redirect_uri: http://localhost:3000/oauth/redirected/naver
+    client_secret: F5BCjIhXHv
+    scope:
+
+jwt:
+  header: Authorization
+  #HS512 ????? ??? ??? ??? 512bit, ? 64byte ??? secret key? ???? ??.
+  secret: a2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbQ==
+  token-validity-in-seconds: 86400 # ttl (?)
