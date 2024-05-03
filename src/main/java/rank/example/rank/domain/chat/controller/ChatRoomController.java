@@ -1,7 +1,10 @@
 package rank.example.rank.domain.chat.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import rank.example.rank.domain.chat.dto.ChatRoomResponseDto;
 import rank.example.rank.domain.chat.dto.CreateChatRoomDto;
+import rank.example.rank.domain.chat.entity.ChatMessage;
 import rank.example.rank.domain.chat.entity.ChatRoom;
 import rank.example.rank.domain.chat.service.ChatMessageService;
 import rank.example.rank.domain.chat.service.ChatRoomService;
@@ -51,5 +55,10 @@ public class ChatRoomController {
 			return ResponseEntity.ok(true);
 		else
 			return ResponseEntity.ok(false);
+	}
+
+	@GetMapping("/chatroom/{roomId}/chat")
+	public ResponseEntity<List<ChatMessage>> getChatMessage(@PathVariable Long roomId) {
+		return ResponseEntity.ok(chatMessageService.getChatMessages(roomId));
 	}
 }
