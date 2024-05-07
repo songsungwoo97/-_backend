@@ -1,63 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Match Application</title>
+<html>
+<head>
+    <title>Match Application Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 <body>
-<h1>Match Application</h1>
-<form id="applicationForm">
+<h1>Match Application Test</h1>
+<div>
     <label for="matchId">Match ID:</label>
-    <input type="text" id="matchId" name="matchId" required><br><br>
-        <label for="applicantId">Applicant ID:</label>
-        <input type="text" id="applicantId" name="applicantId" required><br><br>
-            <button type="submit">Apply</button>
-</form>
-<h2>Application List</h2>
-<ul id="applicationList">
-    <!-- 이 곳에 서버에서 받은 신청 목록이 추가됩니다. -->
-</ul>
+    <input type="text" id="matchId" placeholder="Enter match ID">
+</div>
+<div>
+    <label for="applicantId">Applicant ID:</label>
+    <input type="text" id="applicantId" placeholder="Enter applicant ID">
+</div>
+<div>
+    <label for="token">Token:</label>
+    <input type="text" id="token" placeholder="Enter token">
+</div>
+<button onclick="connect()">Connect</button>
+<button onclick="applyForMatch()" disabled>Apply for Match</button>
+<div id="applications"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
 <script>
-    var stompClient = null;
+    let stompClient = null;
 
     function connect() {
-    var socket = new SockJS('/ws');
-    stompClient = Stomp.over(socket);
-    stompClient.connect({}, function(frame) {
-    console.log('Connected: ' + frame);
-    stompClient.subscribe('/topic/match/{matchId}/applications', function(message) {
-    var applications = JSON.parse(message.body);
-    updateApplications(applications);
-});
-});
-}
+        const socket = new SockJS('http://localhost:8080/ws');
+        const token = document.getElementById('token').value;
+        stompClient = Stomp.over(socket);
+        stompClient.connect({
+            'Authorization': token
+        }, onConnected, onError);
+    }
 
-    function updateApplications(applications) {
-    var applicationList = document.getElementById("applicationList");
-    // 기존의 신청 목록을 모두 삭제
-    while (applicationList.firstChild) {
-    applicationList.removeChild(applicationList.firstChild);
-}
-    // 새로운 신청 목록을 화면에 추가
-    applications.forEach(function(application) {
-    var listItem = document.createElement("li");
-    listItem.textContent = "Applicant ID: " + application.applicantId + ", Match ID: " + application.matchId;
-    applicationList.appendChild(listItem);
-});
-}
+    function onConnected() {
+        stompClient.subscribe('/topic/match/' + document.getElementById('matchId').value + '/applications', onApplicationsReceived);
+        document.querySelector('button[onclick="applyForMatch()"]').disabled = false;
+    }
 
-    document.getElementById("applicationForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-    var matchId = document.getElementById("matchId").value;
-    var applicantId = document.getElementById("applicantId").value;
-    stompClient.send("/app/apply/" + matchId, {}, JSON.stringify({ 'matchId': matchId, 'applicantId': applicantId }));
-});
+    function onError(error) {
+        console.log('Error: ' + error);
+    }
 
-    connect();
+    function applyForMatch() {
+        const matchId = document.getElementById('matchId').value;
+        const applicantId = document.getElementById('applicantId').value;
+        if (stompClient !== null) {
+            stompClient.send('/app/match/apply/' + matchId, {}, JSON.stringify({ applicantId: applicantId }));
+        } else {
+            console.log('WebSocket connection is not established.');
+        }
+    }
+
+    function onApplicationsReceived(payload) {
+        const applications = JSON.parse(payload.body);
+        const applicationsDiv = document.getElementById('applications');
+        applicationsDiv.innerHTML = '';
+        applications.forEach(application => {
+            const p = document.createElement('p');
+            p.textContent = `Applicant ID: ${application.applicantId}`;
+            applicationsDiv.appendChild(p);
+        });
+    }
 </script>
 </body>
 </html>

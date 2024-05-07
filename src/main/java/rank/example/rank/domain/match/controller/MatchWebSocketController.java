@@ -5,10 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
 import rank.example.rank.domain.match.dto.*;
 import rank.example.rank.domain.match.service.MatchService;
+import rank.example.rank.domain.user.entity.CustomUserDetail;
 
 import java.util.List;
 
@@ -22,8 +25,16 @@ public class MatchWebSocketController {
 
     @MessageMapping("/match/apply/{matchId}")
     @SendTo("/topic/match/{matchId}/applications")
-    public List<MatchApplicationDto> applyMatch(@DestinationVariable Long matchId, FuckingDto dto) throws Exception {
-        matchService.applyForMatch(matchId, dto.getApplicantId());
+    public List<MatchApplicationDto> applyMatch(@DestinationVariable Long matchId, ApplyRequestDto dto, SimpMessageHeaderAccessor headerAccessor) throws Exception {
+        log.info("매치idddddd = {}", matchId);
+        Authentication authentication = (Authentication) headerAccessor.getSessionAttributes().get("authentication");
+        CustomUserDetail principal2 = (CustomUserDetail) authentication.getPrincipal();
+        Object principal = authentication.getPrincipal();
+        log.info("토큰!!!!!!!!! = {}", principal);
+        log.info("커스텀!!!!!!!!!! = {}", principal2.getUserId());
+        log.info("커스텀!!!!!!!!!! = {}", principal2.getEmail());
+        matchService.applyForMatch(matchId, principal2.getUserId());
+
         return matchService.getApplicationsForMatch(matchId);
     }
 
@@ -46,7 +57,7 @@ public class MatchWebSocketController {
 
     @MessageMapping("/match/finish/{matchId}")
     @SendTo("/topic/match/{matchId}/finish")
-    public MatchDto finishMatch(@DestinationVariable Long matchId, FuckingDto dto) {
+    public MatchDto finishMatch(@DestinationVariable Long matchId, ApplyRequestDto dto) {
         return matchService.finalizeMatch(matchId);
     }
 }

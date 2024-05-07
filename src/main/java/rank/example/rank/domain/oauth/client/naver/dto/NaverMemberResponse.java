@@ -21,7 +21,7 @@ public record NaverMemberResponse(
                 .profileImageUrl(response.profileImage)
                 .email(response.email)
                 .name(response.name)
-                .userType(UserType.ROLE_USER)
+                .userType(UserType.ROLE_GUEST)
                 .build();
     }
 

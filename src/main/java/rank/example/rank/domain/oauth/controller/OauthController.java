@@ -9,8 +9,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import rank.example.rank.domain.jwt.TokenProvider;
 import rank.example.rank.domain.oauth.domain.OauthServerType;
+import rank.example.rank.domain.oauth.dto.LoginDto;
 import rank.example.rank.domain.oauth.service.OauthService;
 import rank.example.rank.domain.user.entity.User;
+import rank.example.rank.domain.user.entity.UserType;
 
 @RequiredArgsConstructor
 @RequestMapping("/oauth")
@@ -24,21 +26,25 @@ public class OauthController {
     @GetMapping("/{oauthServerType}")
     ResponseEntity<Void> redirectAuthCodeRequestUrl(
             @PathVariable OauthServerType oauthServerType,
-            HttpServletResponse response)
-    {
+            HttpServletResponse response) {
         String redirectUrl = oauthService.getAuthCodeRequestUrl(oauthServerType);
         response.sendRedirect(redirectUrl);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/login/{oauthServerType}")
-    ResponseEntity<String> login(
+    @PostMapping("/login/{oauthServerType}")
+    LoginDto login(
             @PathVariable OauthServerType oauthServerType,
-            @RequestParam String code)
-    {
+            @RequestParam String code) {
         User user = oauthService.login(oauthServerType, code);
         String token = tokenProvider.
                 createTokenOauth(user);
-        return ResponseEntity.ok(token);
+        boolean isUser = user.getUserType() == UserType.ROLE_USER;
+
+        LoginDto dto = new LoginDto();
+        dto.setToken(token);
+        dto.setIsUser(isUser);
+
+        return dto;
     }
 }

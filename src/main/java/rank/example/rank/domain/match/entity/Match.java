@@ -41,6 +41,7 @@ public class Match {
 
     private String gender;
 
+    @Enumerated(EnumType.ORDINAL)
     private Tier tier;
 
     private String location;
@@ -66,4 +67,5 @@ public class Match {
     @ManyToOne
     private User loser;
 
+    private Boolean draw = false;
 }

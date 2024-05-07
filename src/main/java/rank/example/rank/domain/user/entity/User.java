@@ -2,16 +2,14 @@ package rank.example.rank.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import rank.example.rank.domain.userDetail.entity.Tier;
 import rank.example.rank.domain.userDetail.entity.UserDetail;
 
 @Entity
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Users",

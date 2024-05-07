@@ -4,7 +4,7 @@ spring:
     level:
       root: DEBUG
       org.springframework.web: DEBUG
-      org.springframework.security: DEBUG
+      org.springframework.security: INFO
 
   datasource:
     url: jdbc:mysql://testrds.c7k1ulhtgd52.ap-northeast-2.rds.amazonaws.com:3306/seonlimmm
@@ -20,7 +20,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true
@@ -42,6 +42,5 @@ oauth:
 
 jwt:
   header: Authorization
-  #HS512 ????? ??? ??? ??? 512bit, ? 64byte ??? secret key? ???? ??.
   secret: a2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbQ==
-  token-validity-in-seconds: 86400 # ttl (?)
+  token-validity-in-seconds: 86400000

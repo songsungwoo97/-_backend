@@ -3,6 +3,7 @@ package rank.example.rank.domain.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,8 +12,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import rank.example.rank.domain.user.entity.CustomUserDetail;
 import rank.example.rank.domain.user.entity.User;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
@@ -69,9 +75,49 @@ public class TokenProvider implements InitializingBean {
                         .map(SimpleGrantedAuthority::new)
                         .toList();
 
-        org.springframework.security.core.userdetails.User principal = new org.springframework.security.core.userdetails.User(claims.getSubject(), "", authorities);
+//        org.springframework.security.core.userdetails.User principal = new org.springframework.security.core.userdetails.User(claims.getSubject(), "", authorities);
+        CustomUserDetail principal = new CustomUserDetail(
+                claims.getSubject(), // username
+                "", // password (not used)
+                authorities,
+                claims.get(USER_ID_KEY, Long.class), // userId
+                claims.get(EMAIL_KEY, String.class) // email
+        );
+
+        log.info("토크은!!!!!!!! = {}", principal.getUserId());
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+    }
+
+    public Long getMemberIdFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        Long memberId = claims.get("userId", Long.class);
+        log.info("Extracted 선림 from token: {}", memberId);
+        return claims.get("userId", Long.class);
+    }
+
+    public Long getMemberIdFromCurrentRequest() {
+        HttpServletRequest request = getCurrentRequest();
+        log.info("설리번2 = {}",request);
+        if (request != null) {
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                String token = authHeader.substring(7);
+                log.info("설리번3 = {}", token);
+                return getMemberIdFromToken(token);
+            }
+        }
+        return null;
+    }
+
+    private HttpServletRequest getCurrentRequest() {
+        ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        return attrs != null ? attrs.getRequest() : null;
     }
 
     public boolean validateToken(String token) {
