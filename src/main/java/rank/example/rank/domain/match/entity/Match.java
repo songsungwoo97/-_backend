@@ -52,6 +52,7 @@ public class Match {
     private String type;
 
     // 매치 상태
+    @Enumerated(EnumType.STRING)
     private MatchStatus status;
 
     @OneToMany(mappedBy = "match", fetch =  FetchType.LAZY, cascade = CascadeType.ALL)
