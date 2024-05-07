@@ -58,6 +58,7 @@ insert into user_detail(id, mmr, win_rate, win, draw, lose, tier, introduction, 
 insert into user_detail(id, mmr, win_rate, win, draw, lose, tier, introduction, ranking) values(27, 344, 65, 78, 19, 42, 0, '안녕하세요. 테스터27입니다.', 26);
 insert into user_detail(id, mmr, win_rate, win, draw, lose, tier, introduction, ranking) values(28, 734, 20.6, 14, 6, 54, 0, '안녕하세요. 테스터28입니다.', 19);
 insert into user_detail(id, mmr, win_rate, win, draw, lose, tier, introduction, ranking) values(29, 3395, 81.6, 31, 1, 7, 4, '안녕하세요. 테스터29입니다.', 2);
+insert into user_detail(id, mmr, win_rate, win, draw, lose, tier, introduction, ranking) values(30, 1060, 28.9, 35, 7, 86, 0, '안녕하세요. 이윤지입니다.', 24);
 
 insert into matches(id, title, initiator_id, opponent_id, match_date_time, gender, tier, location, description, type, status, winner_id, loser_id, draw) values(1, '테스터13와 함께 한 판 하실분?', 13, null, '2024-04-24 14:01:17.6', 'MALE', 2, '서울특별시 강동구 풍성로13', '서울특별시 강동구 풍성로13에서 재밌게 놀 남자 구합니다.', '랭크', 'IN_PROGRESS', null, null, FALSE);
 insert into matches(id, title, initiator_id, opponent_id, match_date_time, gender, tier, location, description, type, status, winner_id, loser_id, draw) values(2, '안녕! Bronze 게임 한 판?', 11, 10, '2024-04-29 14:01:17.6', 'FEMALE', 0, '서울특별시 강동구 풍성로11', '서울특별시 강동구 풍성로11에서 재밌게 놀 남자 구합니다.', '랭크', 'COMPLETED', 10, 11, FALSE);
@@ -156,6 +157,7 @@ insert into matches(id, title, initiator_id, opponent_id, match_date_time, gende
 insert into matches(id, title, initiator_id, opponent_id, match_date_time, gender, tier, location, description, type, status, winner_id, loser_id, draw) values(95, '안녕! Diamond 게임 한 판?', 6, 10, '2024-05-12 14:01:17.6', 'FEMALE', 4, '서울특별시 강동구 풍성로6', '서울특별시 강동구 풍성로6에서 재밌게 놀 여자 구합니다.', '일반', 'IN_PROGRESS', 6, 10, FALSE);
 insert into matches(id, title, initiator_id, opponent_id, match_date_time, gender, tier, location, description, type, status, winner_id, loser_id, draw) values(96, '테스터14와 함께 한 판 하실분?', 14, null, '2024-05-12 14:01:17.6', 'MALE', 3, '서울특별시 강동구 풍성로14', '서울특별시 강동구 풍성로14에서 재밌게 놀 여자 구합니다.', '일반', 'IN_PROGRESS', null, null, TRUE);
 insert into matches(id, title, initiator_id, opponent_id, match_date_time, gender, tier, location, description, type, status, winner_id, loser_id, draw) values(97, '안녕! Bronze 게임 한 판?', 8, null, '2024-05-17 14:01:17.6', 'FEMALE', 0, '서울특별시 강동구 풍성로8', '서울특별시 강동구 풍성로8에서 재밌게 놀 여자 구합니다.', '일반', 'IN_PROGRESS', null, null, FALSE);
+insert into matches(id, title, initiator_id, opponent_id, match_date_time, gender, tier, location, description, type, status, winner_id, loser_id, draw) values(98, '테스터30와 함께 한 판 하실분?', 30, 0, 2024-04-28 14:26:55.5, 'MALE', 0, '서울 동작구', '서울 동작구에서 재밌게 놀 남자 구합니다.', '랭크', 'IN_PROGRESS', null, null, TRUE);
 
 insert into match_application(id, applicant_id, match_id, status) values(1, 25, 1, 'PENDING');
 insert into match_application(id, applicant_id, match_id, status) values(2, 1, 2, 'APPROVED');
@@ -254,6 +256,7 @@ insert into match_application(id, applicant_id, match_id, status) values(94, 19,
 insert into match_application(id, applicant_id, match_id, status) values(95, 3, 95, 'APPROVED');
 insert into match_application(id, applicant_id, match_id, status) values(96, 29, 96, 'APPROVED');
 insert into match_application(id, applicant_id, match_id, status) values(97, 21, 97, 'APPROVED');
+insert into match_application(id, applicant_id, match_id, status) values(98, 30, 14, 'PENDING');
 
 insert into match_set(id, set_number, initiator_score, opponent_score, match_id) values(1, 1, 1, 9, 2);
 insert into match_set(id, set_number, initiator_score, opponent_score, match_id) values(2, 2, 2, 8, 2);
@@ -452,3 +455,5 @@ insert into match_set(id, set_number, initiator_score, opponent_score, match_id)
 insert into match_set(id, set_number, initiator_score, opponent_score, match_id) values(195, 1, 0, 5, 97);
 insert into match_set(id, set_number, initiator_score, opponent_score, match_id) values(196, 2, 7, 2, 97);
 insert into match_set(id, set_number, initiator_score, opponent_score, match_id) values(197, 3, 7, 8, 97);
+insert into match_Set(id, set_number, initiator_score, opponent_score, match_id) values(198, 1, 6, 8, 36);
+insert into match_Set(id, set_number, initiator_score, opponent_score, match_id) values(199, 2, 11, 1, 36);
