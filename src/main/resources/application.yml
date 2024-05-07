@@ -12,6 +12,11 @@ spring:
     username: admin
     password: abcd1234
 
+  sql:
+    init:
+      mode: always
+      platform: mysql
+
   redis:
     data:
       host: localhost
