@@ -27,7 +27,7 @@ insert into users(id, login_id, user_type, email, password, name, profile_image_
 insert into users(id, login_id, user_type, email, password, name, profile_image_url, nickname, address, gender, phone_number, age, oauth_server_id, oauth_server) values(27, null, 'ROLE_USER', 'example27@naver.com', null, '테스터27', null, '테스터27', '서울특별시 강동구 풍성로27', 'FEMALE', '010-4217-8133', 25, null, "KAKAO");
 insert into users(id, login_id, user_type, email, password, name, profile_image_url, nickname, address, gender, phone_number, age, oauth_server_id, oauth_server) values(28, null, 'ROLE_GUEST', 'example28@naver.com', null, '테스터28', null, '테스터28', '서울특별시 강동구 풍성로28', 'MALE', '010-6273-8297', 20, null, "KAKAO");
 insert into users(id, login_id, user_type, email, password, name, profile_image_url, nickname, address, gender, phone_number, age, oauth_server_id, oauth_server) values(29, null, 'ROLE_GUEST', 'example29@naver.com', null, '테스터29', null, '테스터29', '서울특별시 강동구 풍성로29', 'FEMALE', '010-8047-9142', 24, null, "KAKAO");
-insert into users(id, login_id, user_type, email, password, name, profile_image_url, nickname, address, gender, phone_number, age, oauth_server_id, oauth_server) values(30, null, 'ROLE_GUEST', 'dbswl330@nate.com', null, '이윤지', 'http://k.kakaocdn.net/dn/CwEdQ/btsyugBDLIx/jsig6MKURziHXsov98VwpK/img_640x640.jpg', '이윤지', '서울 동작구', 'FEMALE', '010-5513-6459', 26, '3456508078', 'KAKAO');
+insert into users(id, login_id, user_type, email, password, name, profile_image_url, nickname, address, gender, phone_number, age, oauth_server_id, oauth_server) values(30, null, 'ROLE_USER', 'dbswl330@nate.com', null, '이윤지', 'http://k.kakaocdn.net/dn/CwEdQ/btsyugBDLIx/jsig6MKURziHXsov98VwpK/img_640x640.jpg', '이윤지', '서울 동작구', 'FEMALE', '010-5513-6459', 26, '3456508078', 'KAKAO');
 
 insert into user_detail(id, mmr, win_rate, win, draw, lose, tier, introduction, ranking, user_id) values(1, 446, 32.9, 26, 9, 53, 0, '안녕하세요. 테스터1입니다.', 22, 1);
 insert into user_detail(id, mmr, win_rate, win, draw, lose, tier, introduction, ranking, user_id) values(2, 362, 60, 81, 9, 54, 0, '안녕하세요. 테스터2입니다.', 25, 2);
@@ -158,6 +158,8 @@ insert into matches(id, title, initiator_id, opponent_id, match_date_time, gende
 insert into matches(id, title, initiator_id, opponent_id, match_date_time, gender, tier, location, description, type, status, winner_id, loser_id, draw) values(96, '테스터14와 함께 한 판 하실분?', 14, null, '2024-05-12 14:01:17.6', 'MALE', 3, '서울특별시 강동구 풍성로14', '서울특별시 강동구 풍성로14에서 재밌게 놀 여자 구합니다.', '일반', 'IN_PROGRESS', null, null, TRUE);
 insert into matches(id, title, initiator_id, opponent_id, match_date_time, gender, tier, location, description, type, status, winner_id, loser_id, draw) values(97, '안녕! Bronze 게임 한 판?', 8, null, '2024-05-17 14:01:17.6', 'FEMALE', 0, '서울특별시 강동구 풍성로8', '서울특별시 강동구 풍성로8에서 재밌게 놀 여자 구합니다.', '일반', 'IN_PROGRESS', null, null, FALSE);
 insert into matches(id, title, initiator_id, opponent_id, match_date_time, gender, tier, location, description, type, status, winner_id, loser_id, draw) values(98, '테스터30와 함께 한 판 하실분?', 30, null, '2024-04-28 14:26:55.5', 'MALE', 0, '서울 동작구', '서울 동작구에서 재밌게 놀 남자 구합니다.', '랭크', 'IN_PROGRESS', null, null, TRUE);
+insert into matches(id, title, initiator_id, opponent_id, match_date_time, gender, tier, location, description, type, status, winner_id, loser_id, draw) values(99, '안녕! Bronze 게임 한 판?', 30, 28, '2024-05-5 14:26:55.5', 'FEMALE', 0, '서울 동작구', '서울 동작구에서 재밌게 놀 남자 구합니다.', '랭크', 'COMPLETED', 30, 28, FALSE);
+insert into matches(id, title, initiator_id, opponent_id, match_date_time, gender, tier, location, description, type, status, winner_id, loser_id, draw) values(100, '안녕! 이윤지입니다. 한 게임 해요.', 30, 27, '2024-05-4 14:26:55.5', 'FEMALE', 0, '서울 동작구', '서울 동작구에서 재밌게 놀 사람들 구합니다.', '랭크', 'COMPLETED', null, null, TRUE);
 
 insert into match_application(id, applicant_id, match_id, status) values(1, 25, 1, 'PENDING');
 insert into match_application(id, applicant_id, match_id, status) values(2, 1, 2, 'APPROVED');
@@ -257,6 +259,8 @@ insert into match_application(id, applicant_id, match_id, status) values(95, 3, 
 insert into match_application(id, applicant_id, match_id, status) values(96, 29, 96, 'APPROVED');
 insert into match_application(id, applicant_id, match_id, status) values(97, 21, 97, 'APPROVED');
 insert into match_application(id, applicant_id, match_id, status) values(98, 30, 14, 'PENDING');
+insert into match_application(id, applicant_id, match_id, status) values(99, 30, 99, 'APPROVED');
+insert into match_application(id, applicant_id, match_id, status) values(100, 30, 100, 'APPROVED');
 
 insert into match_set(id, set_number, initiator_score, opponent_score, match_id) values(1, 1, 1, 9, 2);
 insert into match_set(id, set_number, initiator_score, opponent_score, match_id) values(2, 2, 2, 8, 2);
@@ -455,5 +459,9 @@ insert into match_set(id, set_number, initiator_score, opponent_score, match_id)
 insert into match_set(id, set_number, initiator_score, opponent_score, match_id) values(195, 1, 0, 5, 97);
 insert into match_set(id, set_number, initiator_score, opponent_score, match_id) values(196, 2, 7, 2, 97);
 insert into match_set(id, set_number, initiator_score, opponent_score, match_id) values(197, 3, 7, 8, 97);
-insert into match_Set(id, set_number, initiator_score, opponent_score, match_id) values(198, 1, 6, 8, 36);
-insert into match_Set(id, set_number, initiator_score, opponent_score, match_id) values(199, 2, 11, 1, 36);
+insert into match_set(id, set_number, initiator_score, opponent_score, match_id) values(198, 1, 6, 8, 36);
+insert into match_set(id, set_number, initiator_score, opponent_score, match_id) values(199, 2, 11, 1, 36);
+insert into match_set(id, set_number, initiator_score, opponent_score, match_id) values(200, 1, 11, 2, 99);
+insert into match_set(id, set_number, initiator_score, opponent_score, match_id) values(201, 2, 11, 5, 99);
+insert into match_set(id, set_number, initiator_score, opponent_score, match_id) values(200, 1, 11, 8, 100);
+insert into match_set(id, set_number, initiator_score, opponent_score, match_id) values(201, 2, 10, 11, 100);
