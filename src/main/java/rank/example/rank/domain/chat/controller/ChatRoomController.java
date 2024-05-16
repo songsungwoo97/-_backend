@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import rank.example.rank.domain.chat.dto.ChatRoomResponseDto;
 import rank.example.rank.domain.chat.dto.CreateChatRoomDto;
+import rank.example.rank.domain.chat.dto.GetChatRoomResponseDto;
 import rank.example.rank.domain.chat.entity.ChatMessage;
 import rank.example.rank.domain.chat.entity.ChatRoom;
 import rank.example.rank.domain.chat.service.ChatMessageService;
@@ -36,7 +37,7 @@ public class ChatRoomController {
 		ChatRoom chatRoom = chatRoomService.createChatRoom(createChatRoomDto.getSenderId(),
 			createChatRoomDto.getInviteeId());
 
-		chatMessageService.sendJoinMessage(chatRoom.getId(), createChatRoomDto.getSenderId());
+		//chatMessageService.sendJoinMessage(chatRoom.getId(), createChatRoomDto.getSenderId());
 
 		ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto();
 		chatRoomResponseDto.setChatroomId(chatRoom.getId());
@@ -56,6 +57,13 @@ public class ChatRoomController {
 		else
 			return ResponseEntity.ok(false);
 	}
+
+	@GetMapping("/chatroom/{userId}")
+	public ResponseEntity<List<GetChatRoomResponseDto>> getChatRoom(@PathVariable Long userId) {
+		return ResponseEntity.ok(chatRoomService.findChatRoomId(userId));
+	}
+
+
 
 	@GetMapping("/chatroom/{roomId}/chat")
 	public ResponseEntity<List<ChatMessage>> getChatMessage(@PathVariable Long roomId) {

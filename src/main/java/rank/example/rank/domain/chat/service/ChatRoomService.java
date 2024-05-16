@@ -1,11 +1,14 @@
 package rank.example.rank.domain.chat.service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import rank.example.rank.domain.chat.dto.GetChatRoomResponseDto;
 import rank.example.rank.domain.chat.entity.ChatRoom;
 import rank.example.rank.domain.chat.repository.ChatRoomRepository;
 
@@ -28,6 +31,13 @@ public class ChatRoomService {
 			.orElseThrow(() -> new NoSuchElementException("채팅방을 찾을 수 없습니다."));
 	}
 
+	public List<GetChatRoomResponseDto> findChatRoomId(Long id) {
+		List<ChatRoom> chatRooms = chatRoomRepository.findAllBySenderIdOrInviteeId(id);
+		return chatRooms.stream()
+			.map(this::convertToGetChatRoomResponse)
+			.collect(Collectors.toList());
+	}
+
 	@Transactional
 	public boolean deleteChatRoom(Long roomId) {
 		if (chatRoomRepository.existsById(roomId)) {
@@ -38,5 +48,13 @@ public class ChatRoomService {
 		} else {
 			return false;
 		}
+	}
+
+	private GetChatRoomResponseDto convertToGetChatRoomResponse(ChatRoom chatRoom) {
+		GetChatRoomResponseDto response = new GetChatRoomResponseDto();
+		response.setRoomId(chatRoom.getId());
+		response.setSenderId(chatRoom.getSenderId());
+		response.setInviteeId(chatRoom.getInviteeId());
+		return response;
 	}
 }
