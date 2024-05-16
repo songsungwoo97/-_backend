@@ -1,26 +1,34 @@
 package rank.example.rank.domain.match.service;
 
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import rank.example.rank.domain.match.dto.*;
 import rank.example.rank.domain.match.entity.*;
 import rank.example.rank.domain.match.exception.MatchNotFoundException;
 import rank.example.rank.domain.match.repository.MatchApplicationRepository;
 import rank.example.rank.domain.match.repository.MatchRepository;
 import rank.example.rank.domain.match.repository.MatchSetRepository;
+import rank.example.rank.domain.user.entity.QUser;
 import rank.example.rank.domain.user.entity.User;
 import rank.example.rank.domain.user.exception.UserNotFoundException;
 import rank.example.rank.domain.user.repository.UserRepository;
 import rank.example.rank.domain.userDetail.entity.Tier;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +40,7 @@ public class MatchService {
     private final MatchRepository matchRepository;
     private final MatchApplicationRepository matchApplicationRepository;
     private final MatchSetRepository matchSetRepository;
+    private final JPAQueryFactory queryFactory;
 
     public MatchDto createMatch(MatchCreateRequestDto requestDto) {
         User initiator = userRepository.findById(requestDto.getInitiatorId())
@@ -90,26 +99,6 @@ public class MatchService {
         return MatchDto.fromEntity(match);
     }
 
-    public Page<MatchDto> findMatchesByCriteria(MatchCondition matchCondition, Pageable pageable) {
-        QMatch match = QMatch.match;
-        BooleanExpression predicate = tierEq(matchCondition.getTier())
-                .and(genderEq(matchCondition.getGender()))
-                .and(locationEq(matchCondition.getLocation()));
-        return matchRepository.findAll(predicate, pageable)
-                .map(MatchDto::fromEntity);
-    }
-
-    private BooleanExpression tierEq(Tier tier) {
-        return tier != null ? QMatch.match.tier.eq(tier) : null;
-    }
-
-    private BooleanExpression genderEq(String gender) {
-        return gender != null ? QMatch.match.gender.eq(gender) : null;
-    }
-
-    private BooleanExpression locationEq(String location) {
-        return location != null ? QMatch.match.location.eq(location) : null;
-    }
 
     @Transactional
     public List<MatchSetDto> addSetToMatch(Long matchId, int setNumber, int initiatorScore, int opponentScore) {
@@ -150,7 +139,28 @@ public class MatchService {
         } else if (opponentWins > initiatorWins) {
             match.setWinner(match.getOpponent());
             match.setLoser(match.getInitiator());
+        } else {
+            match.setDraw(true);
         }
         matchRepository.save(match);
+    }
+
+    public Page<Match> getCompletedMatchesByUserId(Long userId, Pageable pageable) {
+         Page<Match> matches = matchRepository.findAllCompletedMatchesByUserId(userId, pageable);
+         return Optional.ofNullable(matches)
+                 .filter(list -> !list.isEmpty())
+                 .orElseThrow(() -> new MatchNotFoundException("매치를 찾을 수 없ㅇ"));
+    }
+
+    public Page<Match> getMatchesByInitiatorId(Long userId, Pageable pageable) {
+        Page<Match> matches = matchRepository.findAllMatchesByInitiatorId(userId, pageable);
+        return Optional.ofNullable(matches)
+                .filter(list -> !list.isEmpty())
+                .orElseThrow(() -> new MatchNotFoundException("매치 찾을 수 없"));
+    }
+
+    public Page<MatchDto> findMatchesByCriteria(MatchCondition condition, Pageable pageable) {
+        Page<Match> matches = matchRepository.findMatchesByCondition(condition, pageable);
+        return matches.map(MatchDto::fromEntity);
     }
 }

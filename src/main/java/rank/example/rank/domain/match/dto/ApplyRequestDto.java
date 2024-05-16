@@ -3,6 +3,6 @@ package rank.example.rank.domain.match.dto;
 import lombok.Data;
 
 @Data
-public class FuckingDto {
+public class ApplyRequestDto {
     private Long applicantId;
 }

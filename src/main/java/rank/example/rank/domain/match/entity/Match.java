@@ -41,6 +41,7 @@ public class Match {
 
     private String gender;
 
+    @Enumerated(EnumType.ORDINAL)
     private Tier tier;
 
     private String location;
@@ -51,6 +52,7 @@ public class Match {
     private String type;
 
     // 매치 상태
+    @Enumerated(EnumType.STRING)
     private MatchStatus status;
 
     @OneToMany(mappedBy = "match", fetch =  FetchType.LAZY, cascade = CascadeType.ALL)
@@ -66,4 +68,5 @@ public class Match {
     @ManyToOne
     private User loser;
 
+    private Boolean draw = false;
 }

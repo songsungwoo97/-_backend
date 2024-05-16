@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import rank.example.rank.domain.exceptionHandler.exception.MatchException;
 import rank.example.rank.domain.exceptionHandler.exception.UserException;
 
 @RestControllerAdvice
@@ -12,6 +13,13 @@ import rank.example.rank.domain.exceptionHandler.exception.UserException;
 public class GlobalExceptionHandler {
     @ExceptionHandler(UserException.class)
     public ResponseEntity<String> handleApplicationException(UserException ex) {
+        log.error("Application exception occurred: {}", ex.getMessage(), ex);
+        return ResponseEntity.status(ex.getStatus()).body(ex.getMessage());
+    }
+
+
+    @ExceptionHandler(MatchException.class)
+    public ResponseEntity<String> handleApplicationMatchException(MatchException ex) {
         log.error("Application exception occurred: {}", ex.getMessage(), ex);
         return ResponseEntity.status(ex.getStatus()).body(ex.getMessage());
     }

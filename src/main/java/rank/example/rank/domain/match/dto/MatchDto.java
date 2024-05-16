@@ -1,8 +1,11 @@
 package rank.example.rank.domain.match.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import rank.example.rank.domain.match.entity.Match;
 import rank.example.rank.domain.match.entity.MatchSet;
+import rank.example.rank.domain.match.entity.MatchStatus;
 import rank.example.rank.domain.user.entity.User;
 import rank.example.rank.domain.userDetail.entity.Tier;
 
@@ -10,6 +13,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class MatchDto {
     private Long id;
     private String title;
@@ -23,10 +28,11 @@ public class MatchDto {
     private String location;
     private String description;
     private String type;
-    private String status;
+    private MatchStatus status;
     private List<MatchSet> matchSet;
     private User winner;
     private User loser;
+    private Boolean draw;
 
     public static MatchDto fromEntity(Match match) {
         MatchDto dto = new MatchDto();
@@ -44,7 +50,7 @@ public class MatchDto {
         dto.setTier(match.getTier());
         dto.setLocation(match.getLocation());
         dto.setDescription(match.getDescription());
-        dto.setStatus(match.getStatus().name());
+        dto.setStatus(match.getStatus());
         return dto;
     }
 
@@ -64,10 +70,11 @@ public class MatchDto {
         dto.setTier(match.getTier());
         dto.setLocation(match.getLocation());
         dto.setDescription(match.getDescription());
-        dto.setStatus(match.getStatus().name());
+        dto.setStatus(match.getStatus());
         dto.setMatchSet(match.getMatchSets());
         dto.setWinner(match.getWinner());
         dto.setLoser(match.getLoser());
+        dto.setDraw(match.getDraw());
         return dto;
     }
 }
