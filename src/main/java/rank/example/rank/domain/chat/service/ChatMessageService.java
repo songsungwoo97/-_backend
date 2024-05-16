@@ -22,7 +22,7 @@ public class ChatMessageService {
 	@Transactional
 	public void saveChatMessage(ChatMessage chatMessage) {
 		chatMessageRepository.save(chatMessage);
-		saveChatMessageToRedis(chatMessage);
+		//saveChatMessageToRedis(chatMessage);
 	}
 
 	// 채팅 메시지를 Redis에 저장하는 메서드

@@ -9,4 +9,6 @@ public class CreateChatRoomDto {
 	private Long senderId;
 	@NotNull
 	private Long inviteeId;
+
+	private String name;
 }

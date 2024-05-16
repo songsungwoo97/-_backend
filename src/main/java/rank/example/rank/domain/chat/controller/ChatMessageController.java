@@ -50,7 +50,6 @@ public class ChatMessageController {
 		message.setSenderId(chat.getSenderId());
 		message.setMessage(chat.getMessage());
 		chatMessageService.saveChatMessage(message);
-		chatMessageService.saveChatMessageToRedis(message);
 		messagingTemplate.convertAndSend("/chat/" + roomId, chat);
 	}
 }
