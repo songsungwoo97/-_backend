@@ -63,10 +63,10 @@ public class SecurityConfig {
 //                                "/oauth/**").permitAll()
 ////                        .anyRequest().authenticated())
 //                        .anyRequest().authenticated())
-                        .anyRequest().permitAll())
+                        .anyRequest().permitAll());
 
                 // JwtFilter 적용
-                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+//                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }

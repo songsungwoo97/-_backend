@@ -17,6 +17,9 @@ public interface MatchRepository extends JpaRepository<Match, Long>, QuerydslPre
     @Query("select m from Match m where m.initiator.id = :userId and m.status = rank.example.rank.domain.match.entity.MatchStatus.COMPLETED")
     Page<Match> findAllCompletedMatchesByUserId(@Param("userId") Long userId, Pageable pageable);
 
+    @Query("select m from Match m where m.initiator.id = :userId and m.status <> rank.example.rank.domain.match.entity.MatchStatus.COMPLETED")
+    Page<Match> findAllMatchingMatchesByUserId(@Param("userId") Long userId, Pageable pageable);
+
     @Query("select m from Match m where m.initiator.id = :userId")
     Page<Match> findAllMatchesByInitiatorId(@Param("userId") Long userId, Pageable pageable);
 

@@ -11,14 +11,17 @@ import lombok.RequiredArgsConstructor;
 import rank.example.rank.domain.chat.dto.GetChatRoomResponseDto;
 import rank.example.rank.domain.chat.entity.ChatRoom;
 import rank.example.rank.domain.chat.repository.ChatRoomRepository;
+import rank.example.rank.domain.user.entity.User;
+import rank.example.rank.domain.user.repository.UserRepository;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class ChatRoomService {
 
 	final private ChatRoomRepository chatRoomRepository;
 	final private ChatMessageService chatMessageService;
+	private final UserRepository userRepository;
 
 	@Transactional
 	public ChatRoom createChatRoom(Long senderId, Long inviteeId) {
@@ -34,15 +37,14 @@ public class ChatRoomService {
 	public List<GetChatRoomResponseDto> findChatRoomId(Long id) {
 		List<ChatRoom> chatRooms = chatRoomRepository.findAllBySenderIdOrInviteeId(id);
 		return chatRooms.stream()
-			.map(this::convertToGetChatRoomResponse)
-			.collect(Collectors.toList());
+				.map(chatRoom -> convertToGetChatRoomResponse(chatRoom, id))
+				.collect(Collectors.toList());
 	}
 
 	@Transactional
 	public boolean deleteChatRoom(Long roomId) {
 		if (chatRoomRepository.existsById(roomId)) {
 			chatRoomRepository.deleteById(roomId);
-			chatMessageService.deleteChatDataInRedis(roomId);
 			chatMessageService.deleteChatDataByInMySQL(roomId);
 			return true;
 		} else {
@@ -50,11 +52,22 @@ public class ChatRoomService {
 		}
 	}
 
-	private GetChatRoomResponseDto convertToGetChatRoomResponse(ChatRoom chatRoom) {
-		GetChatRoomResponseDto response = new GetChatRoomResponseDto();
-		response.setRoomId(chatRoom.getId());
-		response.setSenderId(chatRoom.getSenderId());
-		response.setInviteeId(chatRoom.getInviteeId());
-		return response;
+	private GetChatRoomResponseDto convertToGetChatRoomResponse(ChatRoom chatRoom, Long userId) {
+		GetChatRoomResponseDto responseDto = new GetChatRoomResponseDto();
+		responseDto.setRoomId(chatRoom.getId());
+		responseDto.setSenderId(chatRoom.getSenderId());
+		responseDto.setInviteeId(chatRoom.getInviteeId());
+        User user;
+        if (userId == chatRoom.getSenderId()) {
+            user = userRepository.findById(chatRoom.getInviteeId()).orElseThrow();
+        } else {
+            user = userRepository.findById(chatRoom.getSenderId()).orElseThrow();
+        }
+        responseDto.setOpponentId(user.getId());
+        responseDto.setOpponentName(user.getName());
+        responseDto.setImageUrl(user.getProfileImageUrl());
+//        responseDto.setImageUrl(userRepository.findById(userId).orElseThrow().getProfileImageUrl());
+
+		return responseDto;
 	}
 }

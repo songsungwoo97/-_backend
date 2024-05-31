@@ -28,23 +28,27 @@ public class OauthController {
             @PathVariable OauthServerType oauthServerType,
             HttpServletResponse response) {
         String redirectUrl = oauthService.getAuthCodeRequestUrl(oauthServerType);
+        log.info("urllllll1111={}", redirectUrl);
         response.sendRedirect(redirectUrl);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login/{oauthServerType}")
-    LoginDto login(
+    ResponseEntity<LoginDto> login(
             @PathVariable OauthServerType oauthServerType,
             @RequestParam String code) {
+        log.info("맨위 = {}", code);
         User user = oauthService.login(oauthServerType, code);
+        log.info("userrrrrrr = {}", user);
         String token = tokenProvider.
                 createTokenOauth(user);
+        log.info("제발d토큰아니어라 = {}", token);
         boolean isUser = user.getUserType() == UserType.ROLE_USER;
 
         LoginDto dto = new LoginDto();
         dto.setToken(token);
         dto.setIsUser(isUser);
 
-        return dto;
+        return ResponseEntity.ok(dto);
     }
 }

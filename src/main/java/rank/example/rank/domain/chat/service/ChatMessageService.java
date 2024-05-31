@@ -9,34 +9,25 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import rank.example.rank.domain.chat.entity.ChatMessage;
 import rank.example.rank.domain.chat.repository.ChatMessageRepository;
+import rank.example.rank.domain.jwt.TokenProvider;
+import rank.example.rank.domain.user.entity.User;
+import rank.example.rank.domain.user.repository.UserRepository;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class ChatMessageService {
 
 	private final ChatMessageRepository chatMessageRepository;
-	private final RedisTemplate<String, ChatMessage> chatRedisTemplate;
+	private final UserRepository userRepository;
+	private final TokenProvider tokenProvider;
 
 	// 채팅 메시지를 MySQL과 Redis에 저장하는 메서드
 	@Transactional
 	public void saveChatMessage(ChatMessage chatMessage) {
 		chatMessageRepository.save(chatMessage);
-		//saveChatMessageToRedis(chatMessage);
 	}
 
-	// 채팅 메시지를 Redis에 저장하는 메서드
-	@Transactional
-	public void saveChatMessageToRedis(ChatMessage chatMessage) {
-		String key = "room:" + chatMessage.getRoomId();
-		chatRedisTemplate.opsForList().rightPush(key, chatMessage);
-	}
-
-	// 특정 채팅방의 채팅 메시지를 Redis에서 가져오는 메서드
-	public List<ChatMessage> getChatMessagesFromRedis(Long roomId) {
-		String key = "room:" + roomId;
-		return chatRedisTemplate.opsForList().range(key, 0, -1);
-	}
 
 	// 특정 채팅방의 채팅 메시지를 MySQL에서 가져오는 메서드
 	public List<ChatMessage> getChatMessagesFromMySQL(Long roomId) {
@@ -45,31 +36,17 @@ public class ChatMessageService {
 
 	// 특정 채팅방의 채팅 메시지를 Redis 또는 MySQL에서 가져오는 메서드
 	public List<ChatMessage> getChatMessages(Long roomId) {
-		List<ChatMessage> chatMessages = getChatMessagesFromRedis(roomId);
-		if (chatMessages.isEmpty()) {
-			chatMessages = getChatMessagesFromMySQL(roomId);
-			if (!chatMessages.isEmpty()) {
-				saveChatMessagesToRedis(roomId, chatMessages);
-			}
+		List<ChatMessage> chatMessages =  getChatMessagesFromMySQL(roomId);
+		User user = userRepository.findById(tokenProvider.getMemberIdFromCurrentRequest()).orElseThrow();
+		for (ChatMessage chatMessage : chatMessages) {
+			chatMessage.setUserId(user.getId());
 		}
 		return chatMessages;
-	}
-
-	// 채팅 메시지 목록을 Redis에 저장하는 메서드
-	private void saveChatMessagesToRedis(Long roomId, List<ChatMessage> chatMessages) {
-		String key = "chat:" + roomId;
-		chatRedisTemplate.opsForList().rightPushAll(key, chatMessages);
 	}
 
 	@Transactional
 	public void deleteChatDataByInMySQL(Long roomId) {
 		chatMessageRepository.deleteByRoomId(roomId);
-	}
-
-	// Redis에서 특정 키의 데이터를 삭제하는 메서드
-	public void deleteChatDataInRedis(Long roomId) {
-		String redisKey = "room:" + roomId;
-		chatRedisTemplate.delete(redisKey);
 	}
 
 	@Transactional

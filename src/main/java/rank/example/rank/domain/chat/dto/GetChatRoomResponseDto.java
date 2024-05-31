@@ -9,4 +9,10 @@ public class GetChatRoomResponseDto {
 	private Long senderId;
 
 	private Long inviteeId;
+
+	private Long opponentId;
+
+	private String opponentName;
+
+	private String imageUrl;
 }

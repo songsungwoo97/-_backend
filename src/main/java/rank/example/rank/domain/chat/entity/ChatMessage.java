@@ -17,6 +17,8 @@ public class ChatMessage {
 
 	private Long roomId;
 
+	private Long userId;
+
 	public ChatMessage() {}
 	public ChatMessage(Long senderId, String message) {
 		this.senderId = senderId;

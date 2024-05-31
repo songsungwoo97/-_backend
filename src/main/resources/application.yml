@@ -7,25 +7,15 @@ spring:
       org.springframework.security: INFO
 
   datasource:
-    url: jdbc:mysql://testrds.c7k1ulhtgd52.ap-northeast-2.rds.amazonaws.com:3306/seonlimmm
+    url: jdbc:mysql://testrds.c7k1ulhtgd52.ap-northeast-2.rds.amazonaws.com:3306/fuck
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: admin
     password: abcd1234
 
-  sql:
-    init:
-      mode: always
-      platform: mysql
-
-  redis:
-    data:
-      host: localhost
-      port: 6379
-
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -36,12 +26,12 @@ spring:
 oauth:
   kakao:
     client_id: 920865d3fcdbfd024c9e2f35b102beb6
-    redirect_uri: http://localhost:3000/oauth/redirected/kakao
+    redirect_uri: https://repo-frontend-chi.vercel.app/oauth/redirected/kakao
     client_secret: dXIKF4iENKboF2RGWERWSgOLZwRRbfQ4
     scope: profile_nickname, profile_image, account_email
   naver:
     client_id: tsCjaf_Sguy3on43jxmt
-    redirect_uri: http://localhost:3000/oauth/redirected/naver
+    redirect_uri: https://repo-frontend-chi.vercel.app/oauth/redirected/naver
     client_secret: F5BCjIhXHv
     scope:
 

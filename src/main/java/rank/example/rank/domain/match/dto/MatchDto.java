@@ -3,6 +3,8 @@ package rank.example.rank.domain.match.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import rank.example.rank.domain.jwt.TokenProvider;
 import rank.example.rank.domain.match.entity.Match;
 import rank.example.rank.domain.match.entity.MatchSet;
 import rank.example.rank.domain.match.entity.MatchStatus;
@@ -20,8 +22,10 @@ public class MatchDto {
     private String title;
     private Long initiatorId;
     private String initiatorName;
+    private String initiatorProfile;
     private Long opponentId;
     private String opponentName;
+    private String opponentProfile;
     private LocalDateTime matchDateTime;
     private String gender;
     private Tier tier;
@@ -33,6 +37,7 @@ public class MatchDto {
     private User winner;
     private User loser;
     private Boolean draw;
+    private Long userId;
 
     public static MatchDto fromEntity(Match match) {
         MatchDto dto = new MatchDto();
@@ -40,14 +45,16 @@ public class MatchDto {
         dto.setTitle(match.getTitle());
         dto.setInitiatorId(match.getInitiator().getId());
         dto.setInitiatorName(match.getInitiator().getName());
-        User opponent = match.getOpponent();
-        if (opponent != null) {
+        if (match.getOpponent() != null) {
+            User opponent = match.getOpponent();
             dto.setOpponentId(opponent.getId());
             dto.setOpponentName(opponent.getName());
+            dto.setOpponentProfile(opponent.getProfileImageUrl());
         }
         dto.setMatchDateTime(match.getMatchDateTime());
         dto.setGender(match.getGender());
         dto.setTier(match.getTier());
+        dto.setInitiatorProfile(match.getInitiator().getProfileImageUrl());
         dto.setLocation(match.getLocation());
         dto.setDescription(match.getDescription());
         dto.setStatus(match.getStatus());

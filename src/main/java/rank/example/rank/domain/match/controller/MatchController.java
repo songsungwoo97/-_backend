@@ -10,6 +10,7 @@ import rank.example.rank.domain.jwt.TokenProvider;
 import rank.example.rank.domain.match.dto.*;
 import rank.example.rank.domain.match.entity.Match;
 import rank.example.rank.domain.match.service.MatchService;
+import rank.example.rank.domain.userDetail.entity.Tier;
 
 import java.util.List;
 
@@ -36,8 +37,14 @@ public class MatchController {
 
     @GetMapping("/list")
     public Page<MatchDto> getMatchList(
-            @RequestBody MatchCondition matchCondition,
+            @RequestParam Tier tier,
+            @RequestParam String gender,
+            @RequestParam String location,
             @PageableDefault(size = 10, page = 0) Pageable pageable) {
+        MatchCondition matchCondition = new MatchCondition();
+        matchCondition.setTier(tier);
+        matchCondition.setGender(gender);
+        matchCondition.setLocation(location);
         log.info("로그111111 = {}", matchCondition.getTier());
         return matchService.findMatchesByCriteria(matchCondition, pageable);
     }
@@ -61,5 +68,13 @@ public class MatchController {
             @PageableDefault(size = 10, page = 0) Pageable pageable) {
         userId = tokenProvider.getMemberIdFromCurrentRequest();
         return matchService.getMatchesByInitiatorId(userId, pageable);
+    }
+
+    @GetMapping("/matching/{userId}")
+    public Page<Match> getMatchingByUser(
+            @PathVariable Long userId,
+            @PageableDefault(size = 10, page = 0) Pageable pageable) {
+        userId = tokenProvider.getMemberIdFromCurrentRequest();
+        return matchService.getMatchingMatchesByUserId(userId, pageable);
     }
 }

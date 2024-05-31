@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import rank.example.rank.domain.match.entity.Match;
+import rank.example.rank.domain.match.entity.MatchStatus;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +26,8 @@ public class MatchAcceptResponseDto {
 
     private String message;
 
+    private MatchStatus status;
+
     public static MatchAcceptResponseDto of(Match match, String message) {
         MatchAcceptResponseDto dto = new MatchAcceptResponseDto();
         dto.matchId = match.getId();
@@ -32,6 +35,7 @@ public class MatchAcceptResponseDto {
         dto.matchDateTime = match.getMatchDateTime();
         dto.hostName = match.getInitiator().getName();
         dto.message = message;
+        dto.status = match.getStatus();
         return dto;
     }
 }

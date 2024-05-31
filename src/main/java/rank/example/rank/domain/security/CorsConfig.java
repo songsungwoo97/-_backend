@@ -13,6 +13,7 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Collections.singletonList("https://repo-frontend-chi.vercel.app"));
         configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
         configuration.addAllowedOriginPattern("*");
         configuration.addAllowedMethod("*");

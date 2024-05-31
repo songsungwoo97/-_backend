@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import rank.example.rank.domain.jwt.TokenProvider;
 import rank.example.rank.domain.user.dto.AddUserInfoRequestDto;
+import rank.example.rank.domain.user.dto.UpdateUserInfoDto;
 import rank.example.rank.domain.user.entity.User;
 import rank.example.rank.domain.user.service.UserService;
 
@@ -21,5 +22,11 @@ public class UserController {
     public User updateUserEntity(@RequestBody AddUserInfoRequestDto addUserInfoRequestDto) {
         addUserInfoRequestDto.setId(tokenProvider.getMemberIdFromCurrentRequest());
         return userService.addUserInfo(addUserInfoRequestDto);
+    }
+
+    @PostMapping("/update-info")
+    public User updateUserInfo(@RequestBody UpdateUserInfoDto updateUserInfoDto) {
+        updateUserInfoDto.setUserId(tokenProvider.getMemberIdFromCurrentRequest());
+        return userService.updateUserInfo(updateUserInfoDto);
     }
 }
