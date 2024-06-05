@@ -53,7 +53,8 @@ public class ChatRoomController {
     }
 
     /**
-     * roomId로 채팅방, redis, mysql에서의 채팅기록 삭제
+     * roomId로
+     * 채팅방, redis, mysql에서의 채팅기록 삭제
      *
      * @param roomId
      * @return

@@ -68,6 +68,10 @@ public class SecurityConfig {
                 // JwtFilter 적용
 //                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
+        httpSecurity
+                .requiresChannel(channel ->
+                        channel.anyRequest().requiresSecure());
+
         return httpSecurity.build();
     }
 }

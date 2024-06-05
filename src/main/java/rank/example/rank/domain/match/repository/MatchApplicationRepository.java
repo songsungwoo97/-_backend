@@ -18,4 +18,6 @@ public interface MatchApplicationRepository extends JpaRepository<MatchApplicati
             "FROM MatchApplication ma " +
             "WHERE ma.match.id = :matchId")
     List<MatchApplicationDto> findMatchApplicationsByMatchId(@Param("matchId") Long matchId);
+
+    boolean existsByMatchIdAndApplicantId(Long matchId, Long applicantId);
 }

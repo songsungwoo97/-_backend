@@ -24,6 +24,7 @@ public class OauthService {
 
     public User login(OauthServerType oauthServerType, String authCode) {
         User user = oauthMemberClientComposite.fetchCustom(oauthServerType, authCode);
+        log.info("user!!!!!!!!! = {} {}", authCode, user);
         return userRepository.findByOauthId(user.getOauthId())
                 .orElseGet(() -> {
                     user.createUserDetail(); // UserDetail 초기화

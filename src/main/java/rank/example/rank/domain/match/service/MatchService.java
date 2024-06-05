@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import rank.example.rank.domain.exceptionHandler.exception.IllegalMatchStateException;
 import rank.example.rank.domain.jwt.TokenProvider;
 import rank.example.rank.domain.match.dto.*;
 import rank.example.rank.domain.match.entity.*;
@@ -71,6 +72,15 @@ public class MatchService {
         Match match = matchRepository.findById(matchId)
                 .orElseThrow(() -> new MatchNotFoundException("매치 못찾음 id:" + matchId));
 
+        if (match.getStatus() == MatchStatus.COMPLETED) {
+            throw new IllegalMatchStateException("완료된 경기임 matchId : " + matchId);
+        }
+
+        boolean alreadyApplied = matchApplicationRepository.existsByMatchIdAndApplicantId(matchId, applicantId);
+        if (alreadyApplied) {
+            throw new IllegalMatchStateException("매치신청이 이미 받아들여짐 matchId: " + matchId);
+        }
+
         MatchApplication application = new MatchApplication(applicant, match, MatchApplicationStatus.PENDING);
         matchApplicationRepository.save(application);
     }
@@ -82,6 +92,9 @@ public class MatchService {
     public MatchAcceptResponseDto acceptMatch(MatchAcceptRequestDto requestDto) {
         Match match = matchRepository.findById(requestDto.getMatchId())
                 .orElseThrow(() -> new MatchNotFoundException("매치를 찾을 수 없음 id: " + requestDto.getMatchId()));
+        if (match.getStatus() == MatchStatus.COMPLETED) {
+            throw new IllegalMatchStateException("완료된 경기에서 match accept 불가 id: " + requestDto.getMatchId());
+        }
         User opponent = userRepository.findById(requestDto.getOpponentId())
                 .orElseThrow(() -> new UserNotFoundException("유저를 찾을 수 없음 id: " + requestDto.getOpponentId()));
         MatchApplication matchApplication = matchApplicationRepository.findById(requestDto.getMatchApplicationId())
@@ -109,6 +122,9 @@ public class MatchService {
     @Transactional
     public List<MatchSetDto> addSetToMatch(Long matchId, int setNumber, int initiatorScore, int opponentScore) {
         Match match = matchRepository.findById(matchId).orElseThrow();
+        if (match.getStatus() != MatchStatus.IN_PROGRESS) {
+            throw new IllegalMatchStateException("매치가 진행중이 아닌 경우 세트 추가 불가 MatchId: " + matchId);
+        }
         MatchSet set = new MatchSet(setNumber, initiatorScore, opponentScore, match);
         match.getMatchSets().add(set);
         matchSetRepository.save(set);
@@ -119,7 +135,10 @@ public class MatchService {
 
     @Transactional
     public MatchDto finalizeMatch(Long matchId) {
-        Match match = matchRepository.findById(matchId).orElseThrow(() -> new IllegalArgumentException("Invalid match ID: " + matchId));
+        Match match = matchRepository.findById(matchId).orElseThrow(() -> new MatchNotFoundException("매치 못찾음 ID: " + matchId));
+        if (match.getOpponent() == null) {
+            throw new IllegalMatchStateException("Opponent 가 없음 id: " + matchId);
+        }
         calculateMatchOutcome(match);
         match.setStatus(MatchStatus.COMPLETED);
         if (match.getWinner() != null) {
@@ -131,19 +150,25 @@ public class MatchService {
         return MatchDto.fromEntityFinish(match);
     }
 
-
-
     private void calculateMatchOutcome(Match match) {
         int initiatorWins = 0;
         int opponentWins = 0;
+        int initiatorTotalScore = 0;
+        int opponentTotalScore = 0;
 
         for (MatchSet set : match.getMatchSets()) {
+            initiatorTotalScore += set.getInitiatorScore();
+            opponentTotalScore += set.getOpponentScore();
+
             if (set.getInitiatorScore() > set.getOpponentScore()) {
                 initiatorWins++;
             } else if (set.getInitiatorScore() < set.getOpponentScore()) {
                 opponentWins++;
             }
         }
+
+        match.setInitiatorScore(initiatorTotalScore);
+        match.setOpponentScore(opponentTotalScore);
 
         if (initiatorWins > opponentWins) {
             match.setWinner(match.getInitiator());
@@ -159,23 +184,15 @@ public class MatchService {
         matchRepository.save(match);
     }
 
-
-    public Page<Match> getCompletedMatchesByUserId(Long userId, Pageable pageable) {
-         Page<Match> matches = matchRepository.findAllCompletedMatchesByUserId(userId, pageable);
-         return Optional.ofNullable(matches)
-                 .filter(list -> !list.isEmpty())
-                 .orElseThrow(() -> new MatchNotFoundException("매치를 찾을 수 없ㅇ"));
-    }
-
-    public Page<Match> getMatchingMatchesByUserId(Long userId, Pageable pageable) {
-        Page<Match> matches = matchRepository.findAllMatchingMatchesByUserId(userId, pageable);
+    public Page<MatchResponseDto> getMatchesByUserId(Long userId, Pageable pageable) {
+        Page<MatchResponseDto> matches = matchRepository.findAllMatchesByUserId(userId, pageable);
         return Optional.ofNullable(matches)
                 .filter(list -> !list.isEmpty())
-                .orElseThrow(() -> new MatchNotFoundException("매치를 찾을 수 없음"));
+                .orElseThrow(() -> new MatchNotFoundException("매치 찾을 수 없"));
     }
 
-    public Page<Match> getMatchesByInitiatorId(Long userId, Pageable pageable) {
-        Page<Match> matches = matchRepository.findAllMatchesByInitiatorId(userId, pageable);
+    public Page<MatchResponseDto> getCompletedMatchesByUserId(Long userId, Pageable pageable) {
+        Page<MatchResponseDto> matches = matchRepository.findCompletedMatchesByUserId(userId, pageable);
         return Optional.ofNullable(matches)
                 .filter(list -> !list.isEmpty())
                 .orElseThrow(() -> new MatchNotFoundException("매치 찾을 수 없"));

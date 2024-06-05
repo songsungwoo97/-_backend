@@ -8,7 +8,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import rank.example.rank.domain.jwt.TokenProvider;
 import rank.example.rank.domain.match.dto.*;
-import rank.example.rank.domain.match.entity.Match;
 import rank.example.rank.domain.match.service.MatchService;
 import rank.example.rank.domain.userDetail.entity.Tier;
 
@@ -54,27 +53,17 @@ public class MatchController {
         return matchService.getMatchDetail(matchId);
     }
 
+    @GetMapping("/user/{userId}")
+    public Page<MatchResponseDto> getMatchesByUser(
+            @PathVariable Long userId,
+            @PageableDefault(size = 10, page = 0) Pageable pageable) {
+        return matchService.getMatchesByUserId(userId, pageable);
+    }
+
     @GetMapping("/user/{userId}/completed")
-    public Page<Match> getCompletedMatchesByUserId(
+    public Page<MatchResponseDto> getMatchesCompleted(
             @PathVariable Long userId,
             @PageableDefault(size = 10, page = 0) Pageable pageable) {
-        userId = tokenProvider.getMemberIdFromCurrentRequest();
         return matchService.getCompletedMatchesByUserId(userId, pageable);
-    }
-
-    @GetMapping("/initiator/{userId}")
-    public Page<Match> getMatchesByInitiator(
-            @PathVariable Long userId,
-            @PageableDefault(size = 10, page = 0) Pageable pageable) {
-        userId = tokenProvider.getMemberIdFromCurrentRequest();
-        return matchService.getMatchesByInitiatorId(userId, pageable);
-    }
-
-    @GetMapping("/matching/{userId}")
-    public Page<Match> getMatchingByUser(
-            @PathVariable Long userId,
-            @PageableDefault(size = 10, page = 0) Pageable pageable) {
-        userId = tokenProvider.getMemberIdFromCurrentRequest();
-        return matchService.getMatchingMatchesByUserId(userId, pageable);
     }
 }

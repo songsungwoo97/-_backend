@@ -1,5 +1,6 @@
 package rank.example.rank.domain.oauth.client;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import rank.example.rank.domain.oauth.domain.OauthServerType;
 import rank.example.rank.domain.user.entity.User;
@@ -12,6 +13,7 @@ import static java.util.function.UnaryOperator.identity;
 import static java.util.stream.Collectors.toMap;
 
 @Component
+@Slf4j
 public class OauthMemberClientComposite {
     private final Map<OauthServerType, OauthMemberClient> mapping;
 
@@ -24,6 +26,7 @@ public class OauthMemberClientComposite {
     }
 
     public User fetchCustom(OauthServerType oauthServerType, String authCode) {
+        log.info("fetchCustom!!!!!! = {} {}", authCode, oauthServerType);
         return getClient(oauthServerType).fetchCustom(authCode);
     }
 

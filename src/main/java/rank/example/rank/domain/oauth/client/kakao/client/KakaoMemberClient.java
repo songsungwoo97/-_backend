@@ -26,9 +26,14 @@ public class KakaoMemberClient implements OauthMemberClient {
 
     @Override
     public User fetchCustom(String authCode) {
+        log.info("Fetching token for auth code: {}", authCode);
         KakaoToken tokenInfo = kakaoApiClient.fetchToken(tokenRequestParams(authCode));
-        KakaoMemberResponse kakaoMemberResponse = kakaoApiClient.
-                fetchMember("Bearer " + tokenInfo.accessToken());
+        log.info("Received token info: {}", tokenInfo);
+
+        log.info("Fetching member information with access token: {}", tokenInfo.accessToken());
+        KakaoMemberResponse kakaoMemberResponse = kakaoApiClient.fetchMember("Bearer " + tokenInfo.accessToken());
+        log.info("Received member response: {}", kakaoMemberResponse);
+
         return kakaoMemberResponse.toUserEntity();
     }
 
@@ -39,6 +44,8 @@ public class KakaoMemberClient implements OauthMemberClient {
         params.add("redirect_uri", kakaoOauthConfig.redirectUri());
         params.add("code", authCode);
         params.add("client_secret", kakaoOauthConfig.clientSecret());
+
+        log.info("Requesting token with parameters: {}", params);
         return params;
     }
 }

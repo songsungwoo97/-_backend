@@ -69,4 +69,8 @@ public class Match {
     private User loser;
 
     private Boolean draw = false;
+
+    private int initiatorScore;
+
+    private int opponentScore;
 }

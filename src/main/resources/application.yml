@@ -27,6 +27,7 @@ oauth:
   kakao:
     client_id: 920865d3fcdbfd024c9e2f35b102beb6
     redirect_uri: https://repo-frontend-chi.vercel.app/oauth/redirected/kakao
+#    redirect_uri: http://localhost:3000/oauth/redirected/kakao
     client_secret: dXIKF4iENKboF2RGWERWSgOLZwRRbfQ4
     scope: profile_nickname, profile_image, account_email
   naver:
@@ -39,3 +40,11 @@ jwt:
   header: Authorization
   secret: a2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbQ==
   token-validity-in-seconds: 86400000
+
+server:
+  port: 443
+  ssl:
+    key-store: file:keystore.p12
+    key-store-password: abcd1234
+    key-store-type: PKCS12
+    keyAlias: mysslkey

@@ -34,7 +34,11 @@ docker push kurigohan73/$IMAGE_NAME:latest
 echo "$IMAGE_INDEX" > "$INDEX_FILE"
 
 # SSH로 EC2 인스턴스에 접속하여 새로운 이미지를 실행합니다.
-ssh -i "sshKey2.pem" ec2-user@$EC2_PUBLIC_DNS "sudo docker run -d -p 8080:8080 kurigohan73/$IMAGE_NAME:latest"
+# keystore.p12 파일을 EC2 인스턴스로 복사
+scp -i "sshKey2.pem" /Users/makisekurisu/Downloads/MarketRestore/marketplace/rank/backend/keystore.p12 ec2-user@$EC2_PUBLIC_DNS:/home/ec2-user/keystore.p12
+
+# SSH로 EC2 인스턴스에 접속하여 새로운 이미지를 실행합니다.
+ssh -i "sshKey2.pem" ec2-user@$EC2_PUBLIC_DNS "sudo docker run -d -p 443:443 -v /home/ec2-user/keystore.p12:/keystore.p12 kurigohan73/$IMAGE_NAME:latest"
 
 ## EC2 인스턴스의 퍼블릭 DNS 주소
 #EC2_PUBLIC_DNS="ec2-3-34-133-25.ap-northeast-2.compute.amazonaws.com"

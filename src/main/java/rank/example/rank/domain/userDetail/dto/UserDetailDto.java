@@ -13,13 +13,10 @@ public class UserDetailDto {
     private String name;
     private Double mmr;
     private double winRate;
-    private Long win;
-    private Long draw;
-    private Long lose;
-    private String gender;
+//    private String gender;
     private Tier tier;
     private String introduction;
     private String address;
     private String profileImageUrl;
-    private Long ranking;
+//    private Long ranking;
 }
