@@ -18,7 +18,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getStatus()).body(ex.getMessage());
     }
 
-
     @ExceptionHandler(MatchException.class)
     public ResponseEntity<String> handleApplicationMatchException(MatchException ex) {
         log.error("Application exception occurred: {}", ex.getMessage(), ex);

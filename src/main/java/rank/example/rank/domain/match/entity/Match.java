@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import rank.example.rank.domain.match.dto.MatchCreateRequestDto;
 import rank.example.rank.domain.user.entity.User;
 import rank.example.rank.domain.userDetail.entity.Tier;
 
@@ -55,7 +56,7 @@ public class Match {
     @Enumerated(EnumType.STRING)
     private MatchStatus status;
 
-    @OneToMany(mappedBy = "match", fetch =  FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "match", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonBackReference
     private List<MatchApplication> applications = new ArrayList<>();
 
@@ -73,4 +74,17 @@ public class Match {
     private int initiatorScore;
 
     private int opponentScore;
+
+    public static Match createMatch(MatchCreateRequestDto requestDto, User initiator) {
+        return Match.builder()
+                .title(requestDto.getMatchName())
+                .initiator(initiator)
+                .matchDateTime(LocalDateTime.now())
+                .gender(requestDto.getGender())
+                .tier(requestDto.getTier())
+                .location(requestDto.getLocation())
+                .description(requestDto.getDescription())
+                .status(MatchStatus.IN_PROGRESS)
+                .build();
+    }
 }
