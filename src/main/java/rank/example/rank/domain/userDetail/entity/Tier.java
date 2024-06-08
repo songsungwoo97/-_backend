@@ -1,5 +1,8 @@
 package rank.example.rank.domain.userDetail.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum Tier {
     BRONZE(0),
     SILVER(1),
@@ -13,7 +16,4 @@ public enum Tier {
         this.rank = rank;
     }
 
-    public int getRank() {
-        return rank;
-    }
 }

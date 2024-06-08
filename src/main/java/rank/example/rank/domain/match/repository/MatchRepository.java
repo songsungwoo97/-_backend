@@ -1,6 +1,7 @@
 package rank.example.rank.domain.match.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +15,7 @@ import rank.example.rank.domain.match.entity.QMatch;
 
 import java.util.List;
 
-public interface MatchRepository extends JpaRepository<Match, Long>, QuerydslPredicateExecutor<Match> {
+public interface MatchRepository extends JpaRepository<Match, Long>, QuerydslPredicateExecutor<Match>, CustomMatchRepository {
     @Query("select m from Match m where m.initiator.id = :userId and m.status = rank.example.rank.domain.match.entity.MatchStatus.COMPLETED")
     Page<Match> findAllCompletedMatchesByUserId(@Param("userId") Long userId, Pageable pageable);
 
@@ -55,20 +56,20 @@ public interface MatchRepository extends JpaRepository<Match, Long>, QuerydslPre
             "WHERE (m.initiator.id = :userId OR m.opponent.id = :userId) AND m.status = 'COMPLETED'")
     Page<MatchResponseDto> findCompletedMatchesByUserId(@Param("userId") Long userId, Pageable pageable);
 
-    default Page<Match> findMatchesByCondition(MatchCondition condition, Pageable pageable) {
-        QMatch qMatch = QMatch.match;
-        BooleanBuilder builder = new BooleanBuilder();
-
-        if (condition.getTier() != null) {
-            builder.or(qMatch.tier.eq(condition.getTier()));
-        }
-        if (condition.getGender() != null) {
-            builder.or(qMatch.gender.eq(condition.getGender()));
-        }
-        if (condition.getLocation() != null) {
-            builder.or(qMatch.location.eq(condition.getLocation()));
-        }
-
-        return findAll(builder, pageable);
-    }
+//    default Page<Match> findMatchesByCondition(MatchCondition condition, Pageable pageable) {
+//        QMatch qMatch = QMatch.match;
+//        BooleanBuilder builder = new BooleanBuilder();
+//
+//        if (condition.getTier() != null) {
+//            builder.or(qMatch.tier.eq(condition.getTier()));
+//        }
+//        if (condition.getGender() != null) {
+//            builder.or(qMatch.gender.eq(condition.getGender()));
+//        }
+//        if (condition.getLocation() != null) {
+//            builder.or(qMatch.location.eq(condition.getLocation()));
+//        }
+//
+//        return findAll(builder, pageable);
+//    }
 }

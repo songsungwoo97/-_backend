@@ -36,21 +36,30 @@ public class MatchController {
 
     @GetMapping("/list")
     public Page<MatchDto> getMatchList(
-            @RequestParam Tier tier,
-            @RequestParam String gender,
-            @RequestParam String location,
+            @RequestParam(required = false) Tier tier,
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) String location,
             @PageableDefault(size = 10, page = 0) Pageable pageable) {
         MatchCondition matchCondition = new MatchCondition();
         matchCondition.setTier(tier);
-        matchCondition.setGender(gender);
-        matchCondition.setLocation(location);
+        matchCondition.setGender(gender != null ? gender : "");
+        matchCondition.setLocation(location != null ? location : "");
         log.info("로그111111 = {}", matchCondition.getTier());
-        return matchService.findMatchesByCriteria(matchCondition, pageable);
+        Page<MatchDto> matchDtos = matchService.findMatchesByCriteria(matchCondition, pageable);
+        log.info("matchDtosControllerList = {}", matchDtos);
+        return matchDtos;
     }
+
+//    @GetMapping("/detail/{matchId}")
+//    public MatchDto getMatchDetail(@PathVariable Long matchId) {
+//        return matchService.getMatchDetail(matchId);
+//    }
 
     @GetMapping("/detail/{matchId}")
     public MatchDto getMatchDetail(@PathVariable Long matchId) {
-        return matchService.getMatchDetail(matchId);
+        MatchDto matchDto = matchService.getMatchDetail(matchId);
+        matchDto.setUserId(tokenProvider.getMemberIdFromCurrentRequest());
+        return matchDto;
     }
 
     @GetMapping("/user/{userId}")

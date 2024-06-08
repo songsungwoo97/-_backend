@@ -42,7 +42,7 @@ public class Match {
 
     private String gender;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Tier tier;
 
     private String location;

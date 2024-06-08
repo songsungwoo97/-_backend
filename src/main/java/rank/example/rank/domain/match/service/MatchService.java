@@ -113,11 +113,7 @@ public class MatchService {
     public MatchDto getMatchDetail(Long matchId) {
         Match match = matchRepository.findById(matchId)
                 .orElseThrow(() -> new MatchNotFoundException("매치 못찾음 id: " + matchId));
-        tokenProvider.getMemberIdFromCurrentRequest();
-        MatchDto matchDto = new MatchDto();
-        MatchDto.fromEntity(match);
-        matchDto.setUserId(tokenProvider.getMemberIdFromCurrentRequest());
-        return matchDto;
+        return MatchDto.fromEntity(match);
     }
 
     @Transactional
@@ -201,6 +197,7 @@ public class MatchService {
 
     public Page<MatchDto> findMatchesByCriteria(MatchCondition condition, Pageable pageable) {
         Page<Match> matches = matchRepository.findMatchesByCondition(condition, pageable);
+        log.info("matchDtoCon!!!! = {}", matches);
         return matches.map(MatchDto::fromEntity);
     }
 }

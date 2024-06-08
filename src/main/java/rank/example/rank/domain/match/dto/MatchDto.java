@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import rank.example.rank.domain.jwt.TokenProvider;
 import rank.example.rank.domain.match.entity.Match;
 import rank.example.rank.domain.match.entity.MatchSet;
@@ -17,6 +18,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class MatchDto {
     private Long id;
     private String title;
@@ -58,6 +60,7 @@ public class MatchDto {
         dto.setLocation(match.getLocation());
         dto.setDescription(match.getDescription());
         dto.setStatus(match.getStatus());
+        log.info("matchDto!!!!!!! = {}", dto);
         return dto;
     }
 
