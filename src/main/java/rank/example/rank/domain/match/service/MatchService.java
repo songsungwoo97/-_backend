@@ -115,7 +115,7 @@ public class MatchService {
                 .orElseThrow(() -> new MatchNotFoundException("매치 못찾음 id: " + matchId));
         tokenProvider.getMemberIdFromCurrentRequest();
         MatchDto matchDto = new MatchDto();
-        matchDto.fromEntity(match);
+        MatchDto.fromEntity(match);
         matchDto.setUserId(tokenProvider.getMemberIdFromCurrentRequest());
         return matchDto;
     }

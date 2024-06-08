@@ -12,6 +12,10 @@ spring:
     username: admin
     password: abcd1234
 
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/chatapp
+
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:

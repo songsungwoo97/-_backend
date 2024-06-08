@@ -22,19 +22,15 @@ public class ChatMessageService {
 	private final UserRepository userRepository;
 	private final TokenProvider tokenProvider;
 
-	// 채팅 메시지를 MySQL과 Redis에 저장하는 메서드
 	@Transactional
 	public void saveChatMessage(ChatMessage chatMessage) {
 		chatMessageRepository.save(chatMessage);
 	}
 
-
-	// 특정 채팅방의 채팅 메시지를 MySQL에서 가져오는 메서드
 	public List<ChatMessage> getChatMessagesFromMySQL(Long roomId) {
 		return chatMessageRepository.findByRoomId(roomId);
 	}
 
-	// 특정 채팅방의 채팅 메시지를 Redis 또는 MySQL에서 가져오는 메서드
 	public List<ChatMessage> getChatMessages(Long roomId) {
 		List<ChatMessage> chatMessages =  getChatMessagesFromMySQL(roomId);
 		User user = userRepository.findById(tokenProvider.getMemberIdFromCurrentRequest()).orElseThrow();

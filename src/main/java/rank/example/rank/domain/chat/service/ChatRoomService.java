@@ -2,6 +2,7 @@ package rank.example.rank.domain.chat.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -58,7 +59,7 @@ public class ChatRoomService {
 		responseDto.setSenderId(chatRoom.getSenderId());
 		responseDto.setInviteeId(chatRoom.getInviteeId());
         User user;
-        if (userId == chatRoom.getSenderId()) {
+        if (Objects.equals(userId, chatRoom.getSenderId())) {
             user = userRepository.findById(chatRoom.getInviteeId()).orElseThrow();
         } else {
             user = userRepository.findById(chatRoom.getSenderId()).orElseThrow();

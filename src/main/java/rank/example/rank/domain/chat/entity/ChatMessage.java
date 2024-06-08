@@ -5,18 +5,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
+//@Entity
+@Document(collection = "chat_message")
 @Getter @Setter
 public class ChatMessage {
 
-	@Id @GeneratedValue
-	private Long id;
+	@Id
+	private String id;
 	private Long senderId; //보낸 사람
 	private String message; //메시지 내용
-
 	private Long roomId;
-
 	private Long userId;
 
 	public ChatMessage() {}
